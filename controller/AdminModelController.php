@@ -83,6 +83,15 @@ class AdminModelController extends PluginAdminBaseController
                 "model_id" => $model_id,
             ],
             [
+                "name" => "作者",
+                "field" => "author",
+                "type" => 2,
+                "default" => "",
+                "length" => 255,
+                "vital" => 1,
+                "model_id" => $model_id,
+            ],
+            [
                 "name" => "排序",
                 "field" => "sort",
                 "type" => 1,

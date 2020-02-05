@@ -1,0 +1,76 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<form action="" class="layui-form layui-form-pane">
+		<div class="layui-form-item layui-form-text">
+			<label for="name" class="layui-form-label">字段名称</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="name">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="field" class="layui-form-label">字段键名</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="field">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="" class="layui-form-label">字段类型</label>
+			<div class="layui-input-block">
+				<select id="type" lay-filter="type">
+					<option value="1">数值型</option>
+					<option value="2">短文本</option>
+					<option value="3">长文本</option>
+					<option value="4">富文本</option>
+					<option value="5">图片</option>
+					<option value="6">图片组</option>
+				</select>
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="default" class="layui-form-label">字段默认</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="default">
+			</div>
+		</div>
+	</form>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		/* 生成字段长度输入框 */
+		function getLengthNode() {
+			let node =
+				`
+			<div class="layui-form-item layui-form-text">
+				<label for="length" class="layui-form-label">字段长度</label>
+				<div class="layui-input-block">
+					<input type="text" class="layui-input" id="length">
+				</div>
+			</div>
+			`
+			return node
+		}
+
+		layui.use(["form", "jquery"], function() {
+			let form = layui.form
+			let $ = layui.jquery
+			/* 监听字段类型 */
+			form.on("select(type)", function(data) {
+				if (data.value == 2) {
+					if ($("#length").length == 0) {
+						$("#type").parent().parent().after(getLengthNode())
+					}
+				} else {
+					$("#length").parent().parent().remove()
+				}
+			})
+		})
+	</script>
+</block>
