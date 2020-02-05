@@ -1,0 +1,53 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<form action="{:cmf_plugin_url('Cms://admin_content/link')}?category_id={$category.id}" class="layui-form layui-form-pane"
+	 method="post">
+		<input type="hidden" name="params[category_id]" id="category_id">
+		<div class="layui-form-item">
+			<label for="" class="layui-form-label">栏目名称</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="name" disabled="disabled">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label for="url" class="layui-form-label">栏目链接</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="url" name="params[url]" required="required">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<input type="submit" class="layui-btn" name="submit" value="提交">
+			</div>
+		</div>
+	</form>
+	<if condition="!empty($category)">
+		<script type="text/javascript">
+			$("#name").val("{$category.name}")
+			$("#category_id").val("{$category.id}")
+		</script>
+	</if>
+	<if condition="!empty($data)">
+		<script type="text/javascript">
+			$("#url").val("{$data.url}")
+		</script>
+	</if>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		layui.use(["form"], function() {
+			let form = layui.form
+		})
+
+		$(".nav li").removeClass("active")
+		$(".nav li").eq(2).addClass("active")
+	</script>
+</block>

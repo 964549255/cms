@@ -89,7 +89,7 @@
 											<li class="layui-nav-item">
 												<a href="{:cmf_plugin_url('Cms://admin_content/show')}" target="iframe">${data.name}</a>
 												`
-											if (typeof data.categorys == "object" && data.categorys.length > 0) {
+											if (data.hasCategorys) {
 												datasText += `<ul class="layui-nav-child">`
 												datasText = getDatas(data.categorys, datasText, ++level)
 												datasText += `</ul>`
@@ -115,7 +115,7 @@
 											<li>
 												<a href="{:cmf_plugin_url('Cms://admin_content/show')}" target="iframe">${data.name}</a>
 												`
-											if (typeof data.categorys == "object" && data.categorys.length > 0) {
+											if (data.hasCategorys) {
 												datasText += `<ul class="layui-nav-child">`
 												datasText = getDatas(data.categorys, datasText, ++level)
 												datasText += `</ul>`
