@@ -1,0 +1,32 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<form action="" class="layui-form layui-form-pane">
+		<div class="layui-form-item layui-form-text">
+			<label for="name" class="layui-form-label">模型名称</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="name">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="field" class="layui-form-label">模型键名</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="field">
+			</div>
+		</div>
+	</form>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		layui.use(["form"], function() {
+			let form = layui.form
+		})
+	</script>
+</block>

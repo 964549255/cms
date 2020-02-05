@@ -1,0 +1,170 @@
+<extend name="common/base" />
+
+<block name="title">
+	模型管理
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<table class="table table-bordered table-striped table-hover">
+		<colgroup>
+			<col width="20%">
+			<col width="20%">
+			<col width="20%">
+			<col width="40%">
+		</colgroup>
+		<thead>
+			<th>模型编号</th>
+			<th>模型名称</th>
+			<th>模型键名</th>
+			<th>操作 <button class="btn btn-sm btn-primary" onclick="add()">添加模型</button></th>
+		</thead>
+		<tbody>
+			<volist name="datas" id="data">
+				<tr>
+					<td>{$data.id}</td>
+					<td>{$data.name}</td>
+					<td>{$data.field}</td>
+					<td>
+						<a href="{:cmf_plugin_url('Cms://admin_field/index')}?model_id={$data.id}" class="btn btn-sm btn-default">管理字段</a>
+						<button class="btn btn-sm btn-primary" onclick="edit({$data.id})">修改模型</button>
+						<button class="btn btn-sm btn-danger" onclick="deletes({$data.id}, '确认删除?')">删除模型</button>
+					</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="text-right">
+		{$datas->render()}
+	</div>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		function add() {
+			layui.use(["layer", "jquery"], function() {
+				let layer = layui.layer
+				let $ = layui.jquery
+				let url = `{:cmf_plugin_url('Cms://admin_model/add')}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "添加模型",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								name: form.find("#name").val(),
+								field: form.find("#field").val(),
+							}
+						}
+						if (params.params.name == "") {
+							layer.msg("模型名称为空", {
+								time: 1000
+							})
+							return false
+						}
+						if (params.params.field == "") {
+							layer.msg("模型键名为空", {
+								time: 1000
+							})
+							return false
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		function edit(id) {
+			layui.use(["layer", "jquery"], function() {
+				let layer = layui.layer
+				let $ = layui.jquery
+				let url = `{:cmf_plugin_url('Cms://admin_model/edit')}?id=${id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "修改模型",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								name: form.find("#name").val(),
+								field: form.find("#field").val(),
+							}
+						}
+						if (params.params.name == "") {
+							layer.msg("模型名称为空", {
+								time: 1000
+							})
+							return false
+						}
+						if (params.params.field == "") {
+							layer.msg("模型键名为空", {
+								time: 1000
+							})
+							return false
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		function deletes(id, msg) {
+			layui.use(["jquery"], function() {
+				let $ = layui.jquery
+				if (confirm(msg)) {
+					let url = `{:cmf_plugin_url('Cms://admin_model/delete')}?id=${id}`
+					$.get(url, {}, function(data) {
+						if (data == true) {
+							location.reload()
+						}
+					})
+				}
+			})
+		}
+
+		layui.use(["jquery"], function() {
+			let $ = layui.jquery
+			$(".nav li").removeClass("active")
+			$(".nav li").eq(0).addClass("active")
+		})
+	</script>
+</block>

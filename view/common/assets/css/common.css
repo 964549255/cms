@@ -1,0 +1,19 @@
+.content {
+	padding: 20px 20px 70px 20px;
+}
+
+.mb20 {
+	margin-bottom: 20px;
+}
+
+.frame tbody tr td.td-head {
+	font-weight: bold;
+}
+
+.table thead tr th,
+.table tbody tr td,
+.frame tbody tr td.td-head,
+.frame tbody tr td.td-body {
+	text-align: center;
+	vertical-align: middle;
+}
