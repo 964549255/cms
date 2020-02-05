@@ -42,13 +42,10 @@
 	</form>
 	<if condition="!empty($data)">
 		<script type="text/javascript">
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				$("#name").val("{$data.name}")
-				$("#field").val("{$data.field}")
-				$("#type").val("{$data.type}")
-				$("#default").val("{$data.default}")
-			})
+			$("#name").val("{$data.name}")
+			$("#field").val("{$data.field}")
+			$("#type").val("{$data.type}")
+			$("#default").val("{$data.default}")
 		</script>
 	</if>
 </block>
@@ -70,17 +67,13 @@
 		}
 
 		/* 初始化字段长度输入框 */
-		layui.use(["jquery"], function() {
-			let $ = layui.jquery
-			if ($("#type").val() == 2 && $("#length").length == 0) {
-				$("#type").parent().parent().after(getLengthNode())
-				$("#length").val("{$data.length}")
-			}
-		})
+		if ($("#type").val() == 2 && $("#length").length == 0) {
+			$("#type").parent().parent().after(getLengthNode())
+			$("#length").val("{$data.length}")
+		}
 
-		layui.use(["form", "jquery"], function() {
+		layui.use(["form"], function() {
 			let form = layui.form
-			let $ = layui.jquery
 			/* 监听字段类型 */
 			form.on("select(type)", function(data) {
 				if (data.value == 2) {

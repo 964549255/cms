@@ -44,9 +44,8 @@
 <block name="script">
 	<script type="text/javascript">
 		function add() {
-			layui.use(["layer", "jquery"], function() {
+			layui.use(["layer"], function() {
 				let layer = layui.layer
-				let $ = layui.jquery
 				let url = `{:cmf_plugin_url('Cms://admin_model/add')}`
 				layer.open({
 					type: 2,
@@ -96,9 +95,8 @@
 		}
 
 		function edit(id) {
-			layui.use(["layer", "jquery"], function() {
+			layui.use(["layer"], function() {
 				let layer = layui.layer
-				let $ = layui.jquery
 				let url = `{:cmf_plugin_url('Cms://admin_model/edit')}?id=${id}`
 				layer.open({
 					type: 2,
@@ -148,23 +146,17 @@
 		}
 
 		function deletes(id, msg) {
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				if (confirm(msg)) {
-					let url = `{:cmf_plugin_url('Cms://admin_model/delete')}?id=${id}`
-					$.get(url, {}, function(data) {
-						if (data == true) {
-							location.reload()
-						}
-					})
-				}
-			})
+			if (confirm(msg)) {
+				let url = `{:cmf_plugin_url('Cms://admin_model/delete')}?id=${id}`
+				$.get(url, {}, function(data) {
+					if (data == true) {
+						location.reload()
+					}
+				})
+			}
 		}
 
-		layui.use(["jquery"], function() {
-			let $ = layui.jquery
-			$(".nav li").removeClass("active")
-			$(".nav li").eq(0).addClass("active")
-		})
+		$(".nav li").removeClass("active")
+		$(".nav li").eq(0).addClass("active")
 	</script>
 </block>

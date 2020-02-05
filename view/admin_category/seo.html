@@ -1,0 +1,45 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<form action="" class="layui-form layui-form-pane">
+		<div class="layui-form-item layui-form-text">
+			<label for="seo_title" class="layui-form-label">SEO标题</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="seo_title">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="seo_keyword" class="layui-form-label">SEO关键词</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="seo_keyword">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="seo_description" class="layui-form-label">SEO描述</label>
+			<div class="layui-input-block">
+				<textarea name="" id="seo_description" cols="30" rows="5" class="layui-textarea"></textarea>
+			</div>
+		</div>
+	</form>
+	<if condition="!empty($data)">
+		<script type="text/javascript">
+			$("#seo_title").val("{$data.seo_title}")
+			$("#seo_keyword").val("{$data.seo_keyword}")
+			$("#seo_description").val("{$data.seo_description}")
+		</script>
+	</if>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		layui.use(["form"], function() {
+			let form = layui.form
+		})
+	</script>
+</block>

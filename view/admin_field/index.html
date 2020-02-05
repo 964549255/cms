@@ -71,9 +71,8 @@
 <block name="script">
 	<script type="text/javascript">
 		function add() {
-			layui.use(["layer", "jquery"], function() {
+			layui.use(["layer"], function() {
 				let layer = layui.layer
-				let $ = layui.jquery
 				let url = `{:cmf_plugin_url('Cms://admin_field/add')}`
 				layer.open({
 					type: 2,
@@ -133,9 +132,8 @@
 		}
 
 		function edit(id) {
-			layui.use(["layer", "jquery"], function() {
+			layui.use(["layer"], function() {
 				let layer = layui.layer
-				let $ = layui.jquery
 				let url = `{:cmf_plugin_url('Cms://admin_field/edit')}?id=${id}`
 				layer.open({
 					type: 2,
@@ -195,49 +193,37 @@
 		}
 
 		function deletes(id, msg) {
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				if (confirm(msg)) {
-					let url = `{:cmf_plugin_url('Cms://admin_field/delete')}?id=${id}`
-					$.get(url, {}, function(data) {
-						if (data == true) {
-							location.reload()
-						}
-					})
-				}
-			})
-		}
-
-		function status(id, status, msg) {
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				if (confirm(msg)) {
-					let url = `{:cmf_plugin_url('Cms://admin_field/status')}?id=${id}&status=${status}`
-					$.get(url, {}, function(data) {
-						if (data == true) {
-							location.reload()
-						}
-					})
-				}
-			})
-		}
-
-		function sort(o, id) {
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				let url = `{:cmf_plugin_url('Cms://admin_field/sort')}?id=${id}&sort=${o.value}`
+			if (confirm(msg)) {
+				let url = `{:cmf_plugin_url('Cms://admin_field/delete')}?id=${id}`
 				$.get(url, {}, function(data) {
 					if (data == true) {
 						location.reload()
 					}
 				})
+			}
+		}
+
+		function status(id, status, msg) {
+			if (confirm(msg)) {
+				let url = `{:cmf_plugin_url('Cms://admin_field/status')}?id=${id}&status=${status}`
+				$.get(url, {}, function(data) {
+					if (data == true) {
+						location.reload()
+					}
+				})
+			}
+		}
+
+		function sort(o, id) {
+			let url = `{:cmf_plugin_url('Cms://admin_field/sort')}?id=${id}&sort=${o.value}`
+			$.get(url, {}, function(data) {
+				if (data == true) {
+					location.reload()
+				}
 			})
 		}
 
-		layui.use(["jquery"], function() {
-			let $ = layui.jquery
-			$(".nav li").removeClass("active")
-			$(".nav li").eq(0).addClass("active")
-		})
+		$(".nav li").removeClass("active")
+		$(".nav li").eq(0).addClass("active")
 	</script>
 </block>

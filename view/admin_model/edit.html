@@ -23,11 +23,8 @@
 	</form>
 	<if condition="!empty($data)">
 		<script type="text/javascript">
-			layui.use(["jquery"], function() {
-				let $ = layui.jquery
-				$("#name").val("{$data.name}")
-				$("#field").val("{$data.field}")
-			})
+			$("#name").val("{$data.name}")
+			$("#field").val("{$data.field}")
 		</script>
 	</if>
 </block>

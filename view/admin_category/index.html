@@ -1,0 +1,279 @@
+<extend name="common/base" />
+
+<block name="title">
+	栏目管理
+</block>
+
+<block name="style">
+	<style type="text/css">
+		.text-left {
+			text-align: left !important;
+		}
+	</style>
+</block>
+
+<block name="content">
+	<table class="table table-bordered table-striped table-hover">
+		<colgroup>
+			<col width="10%">
+			<col width="10%">
+			<col width="20%">
+			<col width="10%">
+			<col width="10%">
+			<col width="10%">
+			<col width="30%">
+		</colgroup>
+		<thead>
+			<th>栏目排序</th>
+			<th>栏目编号</th>
+			<th>栏目名称</th>
+			<th>栏目类型</th>
+			<th>所属模型</th>
+			<th>栏目状态</th>
+			<th>操作 <button class="btn btn-sm btn-primary" onclick="add()">添加栏目</button></th>
+		</thead>
+		<tbody>
+			<script type="text/javascript">
+				let datas = {$datas | json_encode}.data;
+
+				function getDatas(datas, datasText) {
+					$.each(datas, function(index, data) {
+						datasText +=
+							`
+						<tr>
+							<td><input type="text" class="form-control text-center" value="${data.sort}" onchange="sort(this, ${data.id})"></td>
+							<td>${data.id}</td>
+							<td class="text-left">${data.name}</td>
+							<td>${data.type_text}</td>
+							<td>${data.model_name}</td>
+							<td>
+							`
+						switch (parseInt(data.status)) {
+							case 1:
+								datasText += `<button class="btn btn-sm btn-warning" onclick="status(${data.id}, -1, '确认禁用?')">禁用栏目</button>`
+								break;
+							case -1:
+								datasText += `<button class="btn btn-sm btn-success" onclick="status(${data.id}, 1, '确认启用?')">启用栏目</button>`
+								break;
+						}
+						datasText += `
+							</td>
+							<td>
+							`
+						switch (parseInt(data.type)) {
+							case 1:
+								datasText += `<button class="btn btn-sm btn-default" onclick="add(${data.id})">添加子栏目</button>`
+								break;
+						}
+						datasText +=
+							`
+								<button class="btn btn-sm btn-primary" onclick="edit(${data.id})">修改栏目</button>
+								<button class="btn btn-sm btn-danger" onclick="deletes(${data.id}, '确认删除?')">删除栏目</button>
+								<button class="btn btn-sm btn-default" onclick="seo(${data.id})">管理SEO</button>
+							</td>
+						</tr>
+						`
+						if (data.hasCategorys) {
+							datasText = getDatas(data.categorys, datasText)
+						}
+					})
+					return datasText
+				}
+
+				$("tbody").html(getDatas(datas, ""))
+			</script>
+		</tbody>
+	</table>
+	<div class="text-right">
+		{$datas->render()}
+	</div>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		function add(id = "") {
+			layui.use(["layer"], function() {
+				let layer = layui.layer
+				let url = `{:cmf_plugin_url('Cms://admin_category/add')}?category_id=${id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "添加栏目",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								name: form.find("#name").val(),
+								type: form.find("#type").val(),
+								model_id: form.find("#model_id").val(),
+								category_id: form.find("#category_id").val(),
+								description: form.find("#description").val(),
+								image: form.find("#image").val(),
+							}
+						}
+						if (params.params.name == "") {
+							layer.msg("栏目名称为空", {
+								time: 1000
+							})
+							return false
+						}
+						if (params.params.model_id == "") {
+							layer.msg("所属模型为空", {
+								time: 1000
+							})
+							return false
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		function edit(id) {
+			layui.use(["layer"], function() {
+				let layer = layui.layer
+				let url = `{:cmf_plugin_url('Cms://admin_category/edit')}?id=${id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "修改栏目",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								name: form.find("#name").val(),
+								type: form.find("#type").val(),
+								model_id: form.find("#model_id").val(),
+								category_id: form.find("#category_id").val(),
+								description: form.find("#description").val(),
+								image: form.find("#image").val(),
+							},
+							sync: form.find("input[name='sync']:checked").val()
+						}
+						if (params.params.name == "") {
+							layer.msg("栏目名称为空", {
+								time: 1000
+							})
+							return false
+						}
+						if (params.params.model_id == "") {
+							layer.msg("所属模型为空", {
+								time: 1000
+							})
+							return false
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		function seo(id) {
+			layui.use(["layer"], function() {
+				let layer = layui.layer
+				let url = `{:cmf_plugin_url('Cms://admin_category/seo')}?id=${id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "管理SEO",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								seo_title: form.find("#seo_title").val(),
+								seo_keyword: form.find("#seo_keyword").val(),
+								seo_description: form.find("#seo_description").val(),
+							}
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		function deletes(id, msg) {
+			if (confirm(msg)) {
+				let url = `{:cmf_plugin_url('Cms://admin_category/delete')}?id=${id}`
+				$.get(url, {}, function(data) {
+					if (data == true) {
+						location.reload()
+					}
+				})
+			}
+		}
+
+		function status(id, status, msg) {
+			if (confirm(msg)) {
+				let url = `{:cmf_plugin_url('Cms://admin_category/status')}?id=${id}&status=${status}`
+				$.get(url, {}, function(data) {
+					if (data == true) {
+						location.reload()
+					}
+				})
+			}
+		}
+
+		function sort(o, id) {
+			let url = `{:cmf_plugin_url('Cms://admin_category/sort')}?id=${id}&sort=${o.value}`
+			$.get(url, {}, function(data) {
+				if (data == true) {
+					location.reload()
+				}
+			})
+		}
+
+		$(".nav li").removeClass("active")
+		$(".nav li").eq(1).addClass("active")
+	</script>
+</block>

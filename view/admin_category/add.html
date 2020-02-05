@@ -1,0 +1,114 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+	<style type="text/css">
+		.images {
+			height: 120px;
+		}
+
+		#images {
+			height: 100%;
+		}
+	</style>
+</block>
+
+<block name="content">
+	<form action="" class="layui-form layui-form-pane">
+		<div class="layui-form-item layui-form-text">
+			<label for="name" class="layui-form-label">栏目名称</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="name">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="description" class="layui-form-label">栏目描述</label>
+			<div class="layui-input-block">
+				<input type="text" class="layui-input" id="description">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="" class="layui-form-label">栏目图片</label>
+			<div class="layui-input-block">
+				<button class="layui-btn" id="upload" type="button">添加图片</button>
+				<input type="hidden" class="layui-input" id="image">
+			</div>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="" class="layui-form-label">栏目类型</label>
+			<select id="type">
+				<option value="1">栏目</option>
+				<option value="2">列表</option>
+				<option value="3">链接</option>
+			</select>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="" class="layui-form-label">所属模型</label>
+			<select id="model_id">
+				<volist name="models" id="model">
+					<option value="{$model.id}">{$model.name}</option>
+				</volist>
+			</select>
+		</div>
+		<div class="layui-form-item layui-form-text">
+			<label for="" class="layui-form-label">所属栏目</label>
+			<select id="category_id">
+				<script type="text/javascript">
+					let categorys = {$categorys | json_encode};
+				
+					function getCategorys(categorys, categorysText) {
+						$.each(categorys, function(index, category) {
+							categorysText += `<option value="${category.id}">${category.name}</option>`
+							if (category.hasCategorys) {
+								categorysText = getCategorys(category.categorys, categorysText)
+							}
+						})
+						return categorysText
+					}
+				
+					$("#category_id").html(getCategorys(categorys, '<option value="">作为顶级栏目</option>'))
+				</script>
+			</select>
+		</div>
+	</form>
+	<if condition="!empty($category_id)">
+		<script type="text/javascript">
+			$("#category_id").val("{$category_id}")
+		</script>
+	</if>
+	<if condition="!empty($model_id)">
+		<script type="text/javascript">
+			$("#model_id").val("{$model_id}")
+		</script>
+	</if>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		function getImageNode(src) {
+			return `<div class="images"><img src="${src}" id="images"></div>`
+		}
+
+		layui.use(["form", "upload"], function() {
+			let form = layui.form
+			let upload = layui.upload
+			upload.render({
+				elem: "#upload",
+				url: `{:cmf_plugin_url('Cms://admin_category/upload')}`,
+				accept: "images",
+				acceptMime: "image/*",
+				size: 2 * 1024,
+				done: function(data) {
+					if ($("#images").length == 0) {
+						$("#upload").after(getImageNode(data.filename))
+					} else {
+						$("#images").attr("src", data.filename);
+					}
+					$("#image").val(data.filename)
+				}
+			})
+		})
+	</script>
+</block>

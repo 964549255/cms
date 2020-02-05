@@ -58,9 +58,8 @@
 			return node
 		}
 
-		layui.use(["form", "jquery"], function() {
+		layui.use(["form"], function() {
 			let form = layui.form
-			let $ = layui.jquery
 			/* 监听字段类型 */
 			form.on("select(type)", function(data) {
 				if (data.value == 2) {
