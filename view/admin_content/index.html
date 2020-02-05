@@ -1,0 +1,158 @@
+<extend name="common/base-lay" />
+
+<block name="title">
+	内容管理
+</block>
+
+<block name="style">
+	<style type="text/css">
+		.content {
+			width: 100%;
+			height: 100%;
+			box-sizing: border-box;
+		}
+
+		iframe {
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		.header {
+			padding: 20px 20px 0px 20px;
+		}
+
+		.news_nav {
+			border-bottom: 1px solid #ddd;
+			padding-left: 0;
+			margin-bottom: 0;
+			list-style: none;
+
+		}
+
+		.news_nav>li {
+			float: left;
+			margin-bottom: -1px;
+			position: relative;
+			display: block;
+		}
+
+		.news_nav>li>a {
+			margin-right: 2px;
+			line-height: 1.42857143;
+			border: 1px solid transparent;
+			border-radius: 4px 4px 0 0;
+			position: relative;
+			display: block;
+			padding: 10px 15px;
+		}
+
+		.news_nav>li>a:hover {
+			border-color: #eee #eee #ddd;
+			text-decoration: none;
+			background-color: #eee;
+		}
+
+		.news_nav>li.active>a {
+			color: #555;
+			cursor: default;
+			background-color: #fff;
+			border: 1px solid #ddd;
+			border-bottom-color: transparent
+		}
+	</style>
+</block>
+<block name="content">
+	<div class="layui-layout layui-layout-admin">
+		<div class="header">
+			<ul class="news_nav nav nav-tabs">
+				<li role="presentation"><a href="{:cmf_plugin_url('Cms://admin_model/index')}">模型管理</a></li>
+				<li role="presentation"><a href="{:cmf_plugin_url('Cms://admin_category/index')}">栏目管理</a></li>
+				<li role="presentation" class="active"><a href="{:cmf_plugin_url('Cms://admin_content/index')}">内容管理</a></li>
+				<div style="clear: both;"></div>
+			</ul>
+		</div>
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<ul class="layui-nav layui-nav-tree">
+					<script type="text/javascript">
+						let datas = {$datas | json_encode};
+
+						function getDatas(datas, datasText, level) {
+							let levels = level
+							$.each(datas, function(index, data) {
+								if (levels == 1) {
+									switch (parseInt(data.type)) {
+										case 1:
+											datasText +=
+												`
+											<li class="layui-nav-item">
+												<a href="{:cmf_plugin_url('Cms://admin_content/show')}" target="iframe">${data.name}</a>
+												`
+											if (typeof data.categorys == "object" && data.categorys.length > 0) {
+												datasText += `<ul class="layui-nav-child">`
+												datasText = getDatas(data.categorys, datasText, ++level)
+												datasText += `</ul>`
+											}
+											datasText += `
+											</li>
+											`
+											break;
+										case 2:
+											datasText +=
+												`<li class="layui-nav-item"><a href="{:cmf_plugin_url('Cms://admin_content/lists')}?category_id=${data.id}" target="iframe">${data.name}</a></li>`
+											break;
+										case 3:
+											datasText +=
+												`<li class="layui-nav-item"><a href="{:cmf_plugin_url('Cms://admin_content/link')}?category_id=${data.id}" target="iframe">${data.name}</a></li>`
+											break;
+									}
+								} else {
+									switch (parseInt(data.type)) {
+										case 1:
+											datasText +=
+												`
+											<li>
+												<a href="{:cmf_plugin_url('Cms://admin_content/show')}" target="iframe">${data.name}</a>
+												`
+											if (typeof data.categorys == "object" && data.categorys.length > 0) {
+												datasText += `<ul class="layui-nav-child">`
+												datasText = getDatas(data.categorys, datasText, ++level)
+												datasText += `</ul>`
+											}
+											datasText += `
+											</li>
+											`
+											break;
+										case 2:
+											datasText +=
+												`<li><a href="{:cmf_plugin_url('Cms://admin_content/lists')}?category_id=${data.id}" target="iframe">${data.name}</a></li>`
+											break;
+										case 3:
+											datasText +=
+												`<li><a href="{:cmf_plugin_url('Cms://admin_content/link')}?category_id=${data.id}" target="iframe">${data.name}</a></li>`
+											break;
+									}
+								}
+							})
+							return datasText
+						}
+
+						$(".layui-nav").html(getDatas(datas, "", 1))
+					</script>
+				</ul>
+			</div>
+		</div>
+		<div class="layui-body">
+			<iframe src="{:cmf_plugin_url('Cms://admin_content/show_index')}" name="iframe" scrolling="no"></iframe>
+		</div>
+	</div>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		layui.use(["element"], function() {
+			let element = layui.element
+		})
+	</script>
+</block>
