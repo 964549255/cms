@@ -57,7 +57,7 @@
 			<select id="category_id">
 				<script type="text/javascript">
 					let categorys = {$categorys | json_encode};
-				
+
 					function getCategorys(categorys, categorysText) {
 						$.each(categorys, function(index, category) {
 							categorysText += `<option value="${category.id}">${category.name}</option>`
@@ -67,7 +67,7 @@
 						})
 						return categorysText
 					}
-				
+
 					$("#category_id").html(getCategorys(categorys, '<option value="">作为顶级栏目</option>'))
 				</script>
 			</select>
