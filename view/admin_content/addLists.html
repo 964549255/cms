@@ -1,0 +1,91 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+	<style type="text/css">
+		.images {
+			height: 120px;
+		}
+
+		.images img {
+			height: 100%;
+		}
+	</style>
+</block>
+
+<block name="content">
+	<form action="" class="layui-form layui-form-pane">
+		<volist name="fields" id="field">
+			<switch name="field.type">
+				<case value="1|2">
+					<div class="layui-form-item layui-form-text">
+						<label for="{$field.field}" class="layui-form-label">{$field.name}</label>
+						<div class="layui-input-block">
+							<input type="text" class="layui-input" id="{$field.field}">
+						</div>
+					</div>
+				</case>
+				<case value="3">
+					<div class="layui-form-item layui-form-text">
+						<label for="{$field.field}" class="layui-form-label">{$field.name}</label>
+						<div class="layui-input-block">
+							<textarea rows="" cols="5" class="layui-textarea" id="{$field.field}"></textarea>
+						</div>
+					</div>
+				</case>
+				<case value="4">
+
+				</case>
+				<case value="5">
+					<div class="layui-form-item layui-form-text">
+						<label for="" class="layui-form-label">{$field.name}</label>
+						<div class="layui-input-block">
+							<button class="layui-btn" id="{$field.field}-upload" type="button">添加图片</button>
+							<input type="hidden" class="layui-input" id="{$field.field}">
+						</div>
+					</div>
+					<script type="text/javascript">
+						layui.use(["upload"], function() {
+							let upload = layui.upload
+							upload.render({
+								elem: "#{$field.field}-upload",
+								url: `{:cmf_plugin_url('Cms://admin_content/upload')}`,
+								accept: "images",
+								acceptMime: "image/*",
+								size: 2 * 1024,
+								done: function(data) {
+									if ($("#{$field.field}-image").length == 0) {
+										$("#{$field.field}-upload").after(
+											`<div class="images"><img src="${data.filename}" id="{$field.field}-image"></div>`)
+									} else {
+										$("#{$field.field}-image").attr("src", data.filename);
+									}
+									$("#{$field.field}").val(data.filename)
+								}
+							})
+						})
+					</script>
+				</case>
+				<case value="6">
+
+				</case>
+			</switch>
+		</volist>
+	</form>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		layui.use(["form"], function() {
+			let form = layui.form
+		})
+
+		$("#category_id").parent().parent().remove();
+		$("#insert_time").parent().parent().remove();
+		$("#update_time").parent().parent().remove();
+		$("#author").parent().parent().remove();
+		$("#sort").parent().parent().remove();
+	</script>
+</block>

@@ -99,6 +99,90 @@ class AdminContentController extends PluginAdminBaseController
         }
     }
 
+    /*内容*/
+    public function lists()
+    {
+        /*获取参数*/
+        $category_id = input("get.category_id");
+        /*获取模型编号*/
+        $model_id = Db::name("cms_category")->where("id", $category_id)->value("model_id");
+        /*获取模型键名*/
+        $model_field = Db::name("cms_model")->where("id", $model_id)->value("field");
+        /*获取字段集合*/
+        $fields = Db::name("cms_field")->field("name, field, type")->order("SORT, ID")->where([
+            "model_id" => $model_id,
+            "status" => 1
+        ])->select();
+        /*获取参数*/
+        $query = input("get.");
+        $page = input("get.page", 1);
+        $rows = input("get.rows", 10);
+        $path = cmf_plugin_url("Cms://admin_content/lists");
+        /*获取数据*/
+        $datas = Db::name("cms_model_" . $model_field)->order("SORT, ID")->where("category_id", $category_id)->paginate([
+            "page" => $page,
+            "path" => $path,
+            "query" => $query,
+            "list_rows" => $rows,
+            "type" => "bootstrap",
+        ])->each(function ($data) {
+            /*加工数据-添加时间*/
+            $data["insert_time_text"] = date("Y-m-d h:i:s", $data["insert_time"]);
+            /*加工数据-修改时间*/
+            $data["update_time_text"] = date("Y-m-d h:i:s", $data["update_time"]);
+            return $data;
+        });
+        return $this->fetch("", [
+            "datas" => $datas,
+            "fields" => $fields,
+            "category_id" => $category_id,
+        ]);
+    }
+
+    /*添加内容*/
+    public function addLists()
+    {
+        /*获取参数*/
+        $category_id = input("get.category_id");
+        $submit = input("post.submit");
+        $params = input("post.params/a");
+        /*获取模型编号*/
+        $model_id = Db::name("cms_category")->where("id", $category_id)->value("model_id");
+        /*获取模型键名*/
+        $model_field = Db::name("cms_model")->where("id", $model_id)->value("field");
+        /*获取字段集合*/
+        $fields = Db::name("cms_field")->field("name, field, type")->order("SORT, ID")->where([
+            "model_id" => $model_id,
+            "status" => 1
+        ])->select();
+        /*判断参数*/
+        if (!empty($submit)) {
+            /*设置参数*/
+            /*
+            foreach ($fields as $key => $value) {
+                if ($value["type"] == 4) {
+                    if (isset($params[$value["field"]])) {
+                        $params[$value["field"]] = htmlspecialchars_decode($params[$value["field"]]);
+                    }
+                }
+            }
+            */
+            $params["insert_time"] = time();
+            $params["update_time"] = time();
+            $params["category_id"] = $category_id;
+            $params["author"] = cmf_get_current_admin_id();
+//            $params["author"] = cmf_get_current_admin_name(cmf_get_current_admin_id());
+            /*添加数据-对象表*/
+            Db::name("cms_model_" . $model_field)->insert($params);
+            return true;
+        } else {
+            return $this->fetch("", [
+                "fields" => $fields,
+                "category_id" => $category_id
+            ]);
+        }
+    }
+
     public function uploadFile($file, $path)
     {
         if ($file) {

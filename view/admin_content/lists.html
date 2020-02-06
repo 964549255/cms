@@ -1,0 +1,133 @@
+<extend name="common/iframe" />
+
+<block name="title">
+</block>
+
+<block name="style">
+</block>
+
+<block name="content">
+	<table class="table table-bordered table-striped table-hover">
+		<colgroup>
+			<col width="10%">
+			<col width="10%">
+			<col width="15%">
+			<col width="15%">
+			<col width="15%">
+			<col width="15%">
+			<col width="20%">
+		</colgroup>
+		<thead>
+			<th>排序</th>
+			<th>编号</th>
+			<th>标题</th>
+			<th>发布人</th>
+			<th>添加时间</th>
+			<th>修改时间</th>
+			<th>操作 <button class="btn btn-sm btn-primary" onclick="add()">添加内容</button></th>
+		</thead>
+		<tbody>
+			<volist name="datas" id="data">
+				<tr>
+					<td><input type="text" class="form-control text-center" value="{$data.sort}" onchange="sort(this, {$data.id})"></td>
+					<td>{$data.id}</td>
+					<td>{$data.title}</td>
+					<td>{$data.author}</td>
+					<td>{$data.insert_time_text}</td>
+					<td>{$data.update_time_text}</td>
+					<td>
+						<button class="btn btn-sm btn-primary" onclick="edit({$data.id})">修改内容</button>
+						<button class="btn btn-sm btn-danger" onclick="deletes({$data.id}, '确认删除?')">删除内容</button>
+					</td>
+				</tr>
+			</volist>
+		</tbody>
+	</table>
+	<div class="text-right">
+		{$datas->render()}
+	</div>
+</block>
+
+<block name="script">
+	<script type="text/javascript">
+		function add() {
+			layui.use(["layer"], function() {
+				let layer = layui.layer
+				let url = `{:cmf_plugin_url('Cms://admin_content/addLists')}?category_id={$category_id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "添加内容",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+
+							}
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
+			})
+		}
+
+		/* 
+		function edit(id) {
+			let url = "{:cmf_plugin_url('Cms://admin_content/editLists')}?category_id={$category_id}&id=" + id
+			layer.open({
+				type: 2,
+				content: url,
+				title: "修改内容",
+				area: ["800px", "600px"],
+				shade: [0.8, "#000"],
+				closeBtn: 1,
+				maxmin: true,
+				resize: false,
+				scrollbar: false,
+				shadeClose: true,
+				id: "iframe",
+				end: function() {
+					location.reload();
+				}
+			})
+		}
+		 */
+
+		function deletes(id, msg) {
+			if (confirm(msg)) {
+				let url = "{:cmf_plugin_url('Cms://admin_content/deleteLists')}?category_id={$category_id}&id=${id}"
+				$.get(url, {}, function(data) {
+					if (data == true) {
+						location.reload()
+					}
+				})
+			}
+		}
+
+		function sort(o, id) {
+			let url = `{:cmf_plugin_url('Cms://admin_content/sortLists')}?category_id={$category_id}&id=${id}&sort=${o.value}`
+			$.get(url, {}, function(data) {
+				if (data == true) {
+					location.reload()
+				}
+			})
+		}
+	</script>
+</block>

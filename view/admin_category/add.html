@@ -6,10 +6,20 @@
 <block name="style">
 	<style type="text/css">
 		.images {
-			height: 120px;
+			float: left;
+			height: 100px;
+			position: relative;
 		}
 
-		#images {
+		.images span {
+			position: absolute;
+			right: 5px;
+			top: 5px;
+			color: red;
+			cursor: pointer;
+		}
+
+		.images img {
 			height: 100%;
 		}
 	</style>
@@ -88,7 +98,12 @@
 <block name="script">
 	<script type="text/javascript">
 		function getImageNode(src) {
-			return `<div class="images"><img src="${src}" id="images"></div>`
+			return `<div><div class="images"><img src="${src}" id="images"><span class="layui-icon layui-icon-close" onclick="removeImg(this)"></span></div></div>`
+		}
+
+		function removeImg(o) {
+			$(o).parent().parent().parent().find("input[type='hidden']").val("")
+			$(o).parent().parent().remove()
 		}
 
 		layui.use(["form", "upload"], function() {
