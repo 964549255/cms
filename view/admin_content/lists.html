@@ -46,6 +46,7 @@
 	<div class="text-right">
 		{$datas->render()}
 	</div>
+
 </block>
 
 <block name="script">
@@ -72,7 +73,20 @@
 						let params = {
 							submit: "submit",
 							params: {
-
+								<volist name="fields" id="field">
+									<switch name="field.type">
+										<case value="1|2|3|5">
+											{$field.field}: form.find("#{$field.field}").val(),
+										</case>
+										<case value="4">
+										</case>
+										<case value="6">
+											{$field.field}: $.map(form.find("input[name='{$field.field}[]']"), function(value, index) {
+											return $(value).val()
+											}),
+										</case>
+									</switch>
+								</volist>
 							}
 						}
 						let indexLoad = layer.load(2)
@@ -88,31 +102,60 @@
 			})
 		}
 
-		/* 
 		function edit(id) {
-			let url = "{:cmf_plugin_url('Cms://admin_content/editLists')}?category_id={$category_id}&id=" + id
-			layer.open({
-				type: 2,
-				content: url,
-				title: "修改内容",
-				area: ["800px", "600px"],
-				shade: [0.8, "#000"],
-				closeBtn: 1,
-				maxmin: true,
-				resize: false,
-				scrollbar: false,
-				shadeClose: true,
-				id: "iframe",
-				end: function() {
-					location.reload();
-				}
+			layui.use(["layer"], function() {
+				let layer = layui.layer
+				let url = `{:cmf_plugin_url('Cms://admin_content/editLists')}?category_id={$category_id}&id=${id}`
+				layer.open({
+					type: 2,
+					content: url,
+					title: "修改内容",
+					area: ["800px", "600px"],
+					btn: ["提交", "取消"],
+					shade: [0.8, "#000"],
+					closeBtn: 1,
+					maxmin: true,
+					resize: false,
+					scrollbar: false,
+					shadeClose: true,
+					id: "iframe",
+					yes: function(index, layero) {
+						let form = layer.getChildFrame("form", index)
+						let params = {
+							submit: "submit",
+							params: {
+								<volist name="fields" id="field">
+									<switch name="field.type">
+										<case value="1|2|3|5">
+											{$field.field}: form.find("#{$field.field}").val(),
+										</case>
+										<case value="4">
+										</case>
+										<case value="6">
+											{$field.field}: $.map(form.find("input[name='{$field.field}[]']"), function(value, index) {
+											return $(value).val()
+											}),
+										</case>
+									</switch>
+								</volist>
+							}
+						}
+						let indexLoad = layer.load(2)
+						$.post(url, params, function(data) {
+							if (data == true) {
+								layer.close(indexLoad)
+								layer.close(index)
+								location.reload()
+							}
+						})
+					}
+				})
 			})
 		}
-		 */
 
 		function deletes(id, msg) {
 			if (confirm(msg)) {
-				let url = "{:cmf_plugin_url('Cms://admin_content/deleteLists')}?category_id={$category_id}&id=${id}"
+				let url = `{:cmf_plugin_url('Cms://admin_content/deleteLists')}?category_id={$category_id}&id=${id}`
 				$.get(url, {}, function(data) {
 					if (data == true) {
 						location.reload()

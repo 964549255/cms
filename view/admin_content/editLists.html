@@ -136,6 +136,51 @@
 			</switch>
 		</volist>
 	</form>
+	<script type="text/javascript">
+		<if condition="!empty($data)">
+			<volist name="fields" id="field">
+				<switch name="field.type">
+					<case value="1|2|3">
+						$("#{$field.field}").val("{$data[$field.field]}")
+					</case>
+					<case value="4">
+					</case>
+					<case value="5">
+						<if condition="!empty($data[$field.field])">
+							$("#{$field.field}").val("{$data[$field.field]}")
+							$("#{$field.field}-upload").after(`
+							<div>
+								<div class="images">
+									<img src="{$data[$field.field]}" id="{$field.field}-image">
+									<span class="layui-icon layui-icon-close" onclick="removeImg(this)"></span>
+								</div>
+							<div>
+							`)
+						</if>
+					</case>
+					<case value="6">
+						<if condition="!empty($data[$field.field])">
+							<volist name="$data[$field.field]|explode=', ', ###" id="image">
+								$("#{$field.field}-upload").siblings("div").append(
+									`
+								<div class="images">
+									<img src="{$image}">
+									<span class="layui-icon layui-icon-close" onclick="removeImgs(this)"></span>
+								</div>
+								`
+								)
+								$("#{$field.field}-upload").parent().append(
+									`
+								<input type="hidden" class="layui-input" name="{$field.field}[]" value="{$image}">
+								`
+								)
+							</volist>
+						</if>
+					</case>
+				</switch>
+			</volist>
+		</if>
+	</script>
 </block>
 
 <block name="script">

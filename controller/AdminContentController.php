@@ -167,11 +167,21 @@ class AdminContentController extends PluginAdminBaseController
                 }
             }
             */
+            foreach ($fields as $field) {
+                switch ($field["type"]) {
+                    case 6:
+                        if (!empty($params[$field["field"]])) {
+                            $params[$field["field"]] = implode(", ", $params[$field["field"]]);
+                        } else {
+                            $params[$field["field"]] = "";
+                        }
+                        break;
+                }
+            }
             $params["insert_time"] = time();
             $params["update_time"] = time();
             $params["category_id"] = $category_id;
-            $params["author"] = cmf_get_current_admin_id();
-//            $params["author"] = cmf_get_current_admin_name(cmf_get_current_admin_id());
+            $params["author"] = cmf_get_current_admin_name();
             /*添加数据-对象表*/
             Db::name("cms_model_" . $model_field)->insert($params);
             return true;
@@ -180,6 +190,88 @@ class AdminContentController extends PluginAdminBaseController
                 "fields" => $fields,
                 "category_id" => $category_id
             ]);
+        }
+    }
+
+    public function editLists()
+    {
+        /*获取参数*/
+        $id = input("get.id");
+        $category_id = input("get.category_id");
+        $submit = input("post.submit");
+        $params = input("post.params/a");
+        /*获取模型编号*/
+        $model_id = Db::name("cms_category")->where("id", $category_id)->value("model_id");
+        /*获取模型键名*/
+        $model_field = Db::name("cms_model")->where("id", $model_id)->value("field");
+        /*获取字段集合*/
+        $fields = Db::name("cms_field")->field("name, field, type")->order("SORT, ID")->where([
+            "model_id" => $model_id,
+            "status" => 1
+        ])->select();
+        /*获取数据*/
+        $data = !empty($id) ? Db::name("cms_model_" . $model_field)->where("id", $id)->find() : [];
+        /*判断参数*/
+        if (!empty($submit)) {
+            /*设置参数*/
+            foreach ($fields as $field) {
+                switch ($field["type"]) {
+                    case 6:
+                        if (!empty($params[$field["field"]])) {
+                            $params[$field["field"]] = implode(", ", $params[$field["field"]]);
+                        } else {
+                            $params[$field["field"]] = "";
+                        }
+                        break;
+                }
+            }
+            $params["update_time"] = time();
+            /*修改数据-对象表*/
+            Db::name("cms_model_" . $model_field)->where("id", $id)->update($params);
+            return true;
+        } else {
+            return $this->fetch("", [
+                "data" => $data,
+                "fields" => $fields,
+                "category_id" => $category_id,
+            ]);
+        }
+    }
+
+    /*删除内容*/
+    public function deleteLists()
+    {
+        /*获取参数*/
+        $id = input("get.id");
+        $category_id = input("get.category_id");
+        /*获取模型编号*/
+        $model_id = Db::name("cms_category")->where("id", $category_id)->value("model_id");
+        /*获取模型键名*/
+        $model_field = Db::name("cms_model")->where("id", $model_id)->value("field");
+        /*判断参数*/
+        if (!empty($id)) {
+            /*删除数据-对象表*/
+            Db::name("cms_model_" . $model_field)->where("id", $id)->delete();
+            return true;
+        }
+    }
+
+    /*排序内容*/
+    public function sortLists()
+    {
+        /*获取参数*/
+        $id = input("get.id");
+        $sort = input("get.sort");
+        $category_id = input("get.category_id");
+        /*获取模型编号*/
+        $model_id = Db::name("cms_category")->where("id", $category_id)->value("model_id");
+        /*获取模型键名*/
+        $model_field = Db::name("cms_model")->where("id", $model_id)->value("field");
+        /*判断参数*/
+        if (!empty($id) && !empty($sort)) {
+            /*修改数据*/
+            Db::name("cms_model_" . $model_field)->where("id", $id)->update(["sort" => $sort]);
+            return true;
         }
     }
 
