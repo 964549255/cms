@@ -46,7 +46,15 @@
 					</div>
 				</case>
 				<case value="4">
-
+					<div class="layui-form-item layui-form-text">
+						<label for="{$field.field}" class="layui-form-label">{$field.name}</label>
+						<div class="layui-input-block">
+							<script id="{$field.field}" type="text/plain"></script>
+							<script type="text/javascript">
+								var {$field.field} = UE.getEditor("{$field.field}")
+							</script>
+						</div>
+					</div>
 				</case>
 				<case value="5">
 					<div class="layui-form-item layui-form-text">
@@ -144,6 +152,9 @@
 						$("#{$field.field}").val("{$data[$field.field]}")
 					</case>
 					<case value="4">
+						{$field.field}.ready(function() {
+							{$field.field}.setContent(`{$data[$field.field]}`)
+						})
 					</case>
 					<case value="5">
 						<if condition="!empty($data[$field.field])">
@@ -184,6 +195,12 @@
 </block>
 
 <block name="script">
+	<script type="text/javascript">
+		function getContent(name) {
+			return UE.getEditor(name).getContent()
+		}
+	</script>
+	
 	<script type="text/javascript">
 		layui.use(["form"], function() {
 			let form = layui.form

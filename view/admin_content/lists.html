@@ -79,6 +79,7 @@
 											{$field.field}: form.find("#{$field.field}").val(),
 										</case>
 										<case value="4">
+											{$field.field}: window[layero.find('iframe')[0]['name']].getContent("{$field.field}"),
 										</case>
 										<case value="6">
 											{$field.field}: $.map(form.find("input[name='{$field.field}[]']"), function(value, index) {
@@ -130,6 +131,7 @@
 											{$field.field}: form.find("#{$field.field}").val(),
 										</case>
 										<case value="4">
+											{$field.field}: window[layero.find('iframe')[0]['name']].getContent("{$field.field}"),
 										</case>
 										<case value="6">
 											{$field.field}: $.map(form.find("input[name='{$field.field}[]']"), function(value, index) {

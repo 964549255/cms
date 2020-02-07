@@ -158,17 +158,15 @@ class AdminContentController extends PluginAdminBaseController
         /*判断参数*/
         if (!empty($submit)) {
             /*设置参数*/
-            /*
-            foreach ($fields as $key => $value) {
-                if ($value["type"] == 4) {
-                    if (isset($params[$value["field"]])) {
-                        $params[$value["field"]] = htmlspecialchars_decode($params[$value["field"]]);
-                    }
-                }
-            }
-            */
             foreach ($fields as $field) {
                 switch ($field["type"]) {
+                    case 4:
+                        if (!empty($params[$field["field"]])) {
+                            $params[$field["field"]] = htmlspecialchars_decode($params[$field["field"]]);
+                        } else {
+                            $params[$field["field"]] = "";
+                        }
+                        break;
                     case 6:
                         if (!empty($params[$field["field"]])) {
                             $params[$field["field"]] = implode(", ", $params[$field["field"]]);
@@ -216,6 +214,13 @@ class AdminContentController extends PluginAdminBaseController
             /*设置参数*/
             foreach ($fields as $field) {
                 switch ($field["type"]) {
+                    case 4:
+                        if (!empty($params[$field["field"]])) {
+                            $params[$field["field"]] = htmlspecialchars_decode($params[$field["field"]]);
+                        } else {
+                            $params[$field["field"]] = "";
+                        }
+                        break;
                     case 6:
                         if (!empty($params[$field["field"]])) {
                             $params[$field["field"]] = implode(", ", $params[$field["field"]]);
